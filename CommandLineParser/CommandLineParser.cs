@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 /// <summary>
 /// Reads command line parameters
 /// </summary>
-namespace CommandLine
+namespace Peamel.CommandLineParser
 {
     /// <summary>
     /// The value read from the commandline after parsing
