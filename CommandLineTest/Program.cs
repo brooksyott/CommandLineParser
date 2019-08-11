@@ -18,9 +18,9 @@ namespace CommandLineTest
 
             public ConfigService()
             {
-                _clp.RegisterArguement("--help", PrintHelp, false, "Displays help");
-                _clp.RegisterArguement("--valueA", ValueAOptionHandler, false, "Processes Option A, which is optional");
-                _clp.RegisterArguement("--valueB", ValueBManditoryHandler, true, "This is a manditory argument");
+                _clp.RegisterArgument("--help", PrintHelp, false, "Displays help");
+                _clp.RegisterArgument("--valueA", ValueAOptionHandler, false, "Processes Option A, which is optional");
+                _clp.RegisterArgument("--valueB", ValueBManditoryHandler, true, "This is a manditory argument");
                 _clp.RegisterErrorHandler(ArgErrorHandler);
             }
 

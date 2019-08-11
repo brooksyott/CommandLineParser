@@ -36,11 +36,11 @@ namespace Peamel.CommandLineParser
             public String  emptyValueName;                 // One value may not have a parameter called out, so this stores what it is inteaded to be used for
         }
 
-        // This will be set to true when all arguements have been successfully parsed
+        // This will be set to true when all arguments have been successfully parsed
         public Boolean ArgsParsedSuccessfully = true;
 
         public delegate void CommandLineArgHandler(Object sender, CommandLinePargerEventArgs e, out Boolean hadError);
-        Dictionary<String, ArgDefinition> ArguementHandler = new Dictionary<string, ArgDefinition>();
+        Dictionary<String, ArgDefinition> ArgumentHandler = new Dictionary<string, ArgDefinition>();
 
         // The event handler if the parser has an error, for example detects a parameter that was not defined
         private CommandLineArgHandler ErrorHandler;
@@ -63,7 +63,7 @@ namespace Peamel.CommandLineParser
 
             if (argPrefix == PARAM_PREFIX)
             {
-                // This is an arguement, so parse it
+                // This is an argument, so parse it
                 // Find the first occurence of the "="
                 int eqIndex = arg.IndexOf("=");
                 int strLen = arg.Length;
@@ -87,13 +87,13 @@ namespace Peamel.CommandLineParser
         /// <summary>
         /// Parses the string array and calls handlers registered
         /// </summary>
-        /// <param name="args">Arguements to parse</param>
+        /// <param name="args">Arguments to parse</param>
         /// <param name="displayParsing"> Displays debug information. Defaults to false </param>
         public Boolean Parse(String[] args, Boolean displayParsing = false)
         {
             foreach(String a in args)
             {
-                // Split the string into the arguement and the value
+                // Split the string into the argument and the value
                 String argPrefix = a.Substring(0, 2);
                 String key = String.Empty;
                 String value = String.Empty;
@@ -119,7 +119,7 @@ namespace Peamel.CommandLineParser
             String isRequiredString = String.Empty;
             String parameter = String.Empty;
 
-            foreach (KeyValuePair<String, ArgDefinition> ad in ArguementHandler)
+            foreach (KeyValuePair<String, ArgDefinition> ad in ArgumentHandler)
             {
                 if (ad.Value.required)
                     isRequiredString = "required";
@@ -155,7 +155,7 @@ namespace Peamel.CommandLineParser
             }
 
             String isRequiredString = String.Empty;
-            foreach (KeyValuePair<String, ArgDefinition> ad in ArguementHandler)
+            foreach (KeyValuePair<String, ArgDefinition> ad in ArgumentHandler)
             {
                 if ((ad.Value.required == true) && (ad.Value.parsed == false))
                 {
@@ -204,21 +204,21 @@ namespace Peamel.CommandLineParser
 
         //===========================================================================================
         /// <summary>
-        /// Register a handler for a specific command line arguement
+        /// Register a handler for a specific command line argument
         /// </summary>
         /// <param name="argName"></param>
         /// <param name="argHandler"></param>
         /// <param name="required"></param>
         /// <param name="helpString"></param>
         /// <returns></returns>
-        public Boolean RegisterArguement(String argName, CommandLineArgHandler argHandler, Boolean required, String helpString)
+        public Boolean RegisterArgument(String argName, CommandLineArgHandler argHandler, Boolean required, String helpString)
         {
             if (String.IsNullOrEmpty(argName))
             {
                 Console.WriteLine("Empty paramenter name");
                 return false;
             }
-            if (ArguementHandler.ContainsKey(argName))
+            if (ArgumentHandler.ContainsKey(argName))
             {
                 Console.WriteLine("Argument already registered: " + argName);
                 return false;
@@ -238,13 +238,13 @@ namespace Peamel.CommandLineParser
                 argName = "";
             }
 
-            ArguementHandler.Add(argName, argDef);
+            ArgumentHandler.Add(argName, argDef);
             return true;
         }
 
         //===========================================================================================
         /// <summary>
-        /// Once a command line arguement has been parsed, notify the handler
+        /// Once a command line argument has been parsed, notify the handler
         /// </summary>
         /// <param name="arg"></param>
         /// <param name="value"></param>
@@ -254,35 +254,35 @@ namespace Peamel.CommandLineParser
             Boolean hadError = false;
 
 
-            if (ArguementHandler != null)
+            if (ArgumentHandler != null)
             {
-                if (ArguementHandler.ContainsKey(arg))
+                if (ArgumentHandler.ContainsKey(arg))
                 {
-                    if (ArguementHandler[arg].handler != null)
+                    if (ArgumentHandler[arg].handler != null)
                     {
-                        ArgDefinition argResult = ArguementHandler[arg];
+                        ArgDefinition argResult = ArgumentHandler[arg];
                         e.parameter = arg;
                         e.argvalue = value;
 
-                        ArguementHandler[arg].handler(this, e, out hadError);
+                        ArgumentHandler[arg].handler(this, e, out hadError);
                         argResult.hadError = hadError;
                         if (hadError == true)
                         {
                             ArgsParsedSuccessfully = false;
                         }
                         argResult.parsed = true;
-                        ArguementHandler[arg] = argResult;
+                        ArgumentHandler[arg] = argResult;
                     }
                     else
                     {
-                        Console.WriteLine("Arguement had a null handler: " + arg);
+                        Console.WriteLine("Argument had a null handler: " + arg);
                         NotifyError(arg);
                         ArgsParsedSuccessfully = false;
                     }
                 }
                 else
                 {
-                    //Console.WriteLine("Arguement was not registerd: " + arg);
+                    //Console.WriteLine("Argument was not registerd: " + arg);
                     NotifyError(arg);
                     ArgsParsedSuccessfully = false;
                 }
